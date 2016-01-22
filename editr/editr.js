@@ -113,9 +113,6 @@
             // Default layout view
             view: 'single',
 
-            // Default path to projects
-            path: 'items',
-
             // ACE theme
             theme: 'monokai',
 
@@ -123,11 +120,11 @@
             readonly: false,
 
             wrap: false,
-
+            
             callback: function() {}
         }, opts);
 
-        var htmlOpts = ['path', 'readonly', 'theme', 'view', 'wrap'];
+        var htmlOpts = ['base', 'readonly', 'theme', 'view', 'wrap'];
 
         // Extend js options with options from html data- attributes
         for (var i = 0; i < htmlOpts.length; i++) {
@@ -136,9 +133,9 @@
             }
         }
 
-        // Remove trailing slash
-        opts.path = opts.path.replace(/\/$/, '');
-
+        // Add trailing slash
+        opts.base = opts.base ? opts.base.replace(/\/$/, '') + '/' : '';
+console.log(opts.base);
         // Project data - files, name, etc.
         var data = {
             gists: {},
@@ -230,8 +227,8 @@
                         text: files[i].filename
                     }));
                 };
-
-                return nav;
+                
+	                return nav;
             },
 
             /**
@@ -243,7 +240,7 @@
                 return __.obj('iframe', {
                     class: 'editr__result',
                     name: 'editr_' + get.randomID(),
-                    src: opts.path + '/index.html'
+                    src: opts.base + 'index.html'
                 }).load(function() {
                     el.preview.result = $(this);
                     el.preview.body = el.preview.result.contents().find('body');
@@ -761,7 +758,7 @@
                 }
 
                 $.ajax({
-                    url: [opts.path, data.item, file.filename].join('/'),
+                    url: opts.base + file.filename,
                     success: function(response) {
                         __.fileContentCallback(file, response);
                     },
