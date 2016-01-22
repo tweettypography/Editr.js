@@ -121,6 +121,8 @@
 
             wrap: false,
             
+            hideEmpty: true,
+
             callback: function() {}
         }, opts);
 
@@ -197,7 +199,7 @@ console.log(opts.base);
              */
             navList: function(type, label, pseudoType) {
                 var files = data.files[type],
-                    nav, subnav;
+                    nav, subnav, hasSubnav;
 
                 // Create nav item with label and add subnav
                 nav = __.obj('li', {
@@ -216,6 +218,8 @@ console.log(opts.base);
                 for (var i = 0; i < files.length; i++) {
                     if (files[i].isHidden) {
                         continue;
+                    } else {
+	                    hasSubnav = true;
                     }
 
                     subnav.append(__.obj('li', {
@@ -228,7 +232,9 @@ console.log(opts.base);
                     }));
                 };
                 
+                if (!opts.hideEmpty || hasSubnav) {
 	                return nav;
+                }
             },
 
             /**
@@ -707,7 +713,7 @@ console.log(opts.base);
                 }
 
                 // All files hidden? add default empty file
-                if (hiddenFilesTotal === data.files[type].length) {
+                if ((!opts.hideEmpty || type === 'html') && hiddenFilesTotal === data.files[type].length) {
                     __.addFile(type, 'index.' + type, true);
                 }
             },
